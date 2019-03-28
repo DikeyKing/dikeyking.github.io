@@ -4,7 +4,7 @@
 # ---------------------------------------------------------------
 
 # Site
-title: NexT
+title: 追寻逝去的时光
 subtitle:
 description:
 author: Dikey King
@@ -305,7 +305,7 @@ excerpt_description: true
 # Please use <!-- more --> in the post to control excerpt accurately.
 auto_excerpt:
   enable: false
-  length: 150
+  length: 1500
 
 # Post meta display settings
 post_meta:
