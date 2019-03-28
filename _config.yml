@@ -22,13 +22,13 @@ permalink: pretty
 paginate: 1
 #paginate_path: "/page:num/"
 archive:
-  paginate: 10
+  paginate: 20
   paginate_path: "/page:num/"
 category:
-  paginate: 5
+  paginate: 20
   paginate_path: "/page:num/"
 tag:
-  paginate: 5
+  paginate: 20
   paginate_path: "/page:num/"
 
 # Handling Reading
