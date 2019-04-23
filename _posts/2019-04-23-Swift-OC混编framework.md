@@ -1,6 +1,6 @@
 ---
-title: 123
-date: 2017-01-23 23:55:44
+title: Objective-C-Swift混编Framework
+date: 2019-04-23 
 categories: 随笔
 tags: [X]
 
@@ -96,6 +96,4 @@ framework with Swift 对体积的影响，
 如果是封装framework给自己用，我觉得增加的2.3M体积已经完全可以忽略不计，可以迁徙到新的技术上去，用Swift提高效率，编写更好的代码。
 
 但是如果是对framework的体积大小非常敏感，从目前结果来看，混编Framework还是不能达到预期。
-
-
 <!-- more -->
