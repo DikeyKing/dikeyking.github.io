@@ -10,7 +10,6 @@ tags: [X]
 ![图片](/assets/images/Screen Shot 2019-09-27 at 6.50.22 PM.png)
 
 
-
 **View Did Load ：** 
 
 在通过storyboard或者代码初始化一个 view controller之后， view controller将会将会加载视图到内存中。这个过程创建了controller会管理的视图。在 view controller完成特定视图加载之后，viewDidLoad() 方法就会被调用。controller 就可以利用这个机会完成一些依赖视图已经被加载和准备完成的操作。
