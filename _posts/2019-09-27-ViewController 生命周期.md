@@ -5,7 +5,7 @@ categories: 随笔
 tags: [X]
 ---
 
-![图片](/assets/images/viewcontrollerlifecycle.png) 
+![图片](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/viewcontrollerlifecycle.png) 
 
 **View Did Load ：** 
 
