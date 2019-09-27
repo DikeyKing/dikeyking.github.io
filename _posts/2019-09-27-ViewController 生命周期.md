@@ -5,7 +5,7 @@ categories: 随笔
 tags: [X]
 ---
 
-![img](/assets/images/ViewcontrollerLifeCycle.jpg)
+![图片](/assets/images/ViewcontrollerLifeCycle.jpg)
 
 **View Did Load ：** 
 
