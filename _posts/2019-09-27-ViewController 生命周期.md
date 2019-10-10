@@ -32,3 +32,6 @@ viewDidAppear(_: )  将会在界面出现在屏幕的时候被调用。适合将
 
 
 **参考**: Apple Education. “App Development with Swift.” Apple Inc. - Education, 2019. Apple Books. 
+
+<!-- more -->
+
