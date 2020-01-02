@@ -292,3 +292,4 @@ if (output != NULL) {
 1. [vImage](https://developer.apple.com/documentation/accelerate/vimage)
 2. [Core Image 你需要了解的那些事~](https://colin1994.github.io/2016/10/21/Core-Image-OverView/#3-_CPU_/_GPU)
 3. [Core Image 介绍](https://objccn.io/issue-21-6/)
+4. [参考代码](https://github.com/DikeyKing/DKCamera/blob/master/DKCamera/DKImageConverter/DKImageConverter.mm/)
