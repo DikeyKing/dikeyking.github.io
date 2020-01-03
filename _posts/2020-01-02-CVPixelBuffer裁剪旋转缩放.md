@@ -285,7 +285,25 @@ if (output != NULL) {
 | Core Image CPU                          | 11              | 40                  |        7         |
 | vImage                                  | 45              | 51                  |        11        |
 
-可以见到 Core Image 比起 vImage 还是快了一些，API 也更简单，所以如果版本允许（高版本API），更推荐使用Core Image 进行CVPixelBuffer的各种处理。
+CIContext 的声明方式分别是：
+
+```
+    eaglctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2]; 
+    context = [CIContext contextWithEAGLContext:eaglctx]; // 记得复用 CIContext
+```
+
+以及：
+
+```
+    // context = [CIContext contextWithOptions: nil];
+    context = [CIContext contextWithOptions: [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:kCIContextUseSoftwareRenderer]];
+```
+
+可见 Core Image 比起 vImage 还是快了一些，API 也更简单，所以如果版本允许（高版本API），更推荐使用Core Image 进行CVPixelBuffer的各种处理。
+
+不过，Core Image 要考虑另外一些因素，比如GPU和CPU上的图片分辨率限制，内存交换等等，需要读者自行去阅读文档和探索。
+
+例如：CPU 上可处理的最高分辨率是 16384 * 16384，GPU上最大的分辨率是 4096 * 4096
 
 #### 参考
 
@@ -293,3 +311,4 @@ if (output != NULL) {
 2. [Core Image 你需要了解的那些事~](https://colin1994.github.io/2016/10/21/Core-Image-OverView/#3-_CPU_/_GPU)
 3. [Core Image 介绍](https://objccn.io/issue-21-6/)
 4. [参考代码](https://github.com/DikeyKing/DKCamera/blob/master/DKCamera/DKImageConverter/DKImageConverter.mm/)
+5. [Core Image Programming Guide](https://developer.apple.com/library/archive/documentation/GraphicsImaging/Conceptual/CoreImaging/ci_performance/ci_performance.html#//apple_ref/doc/uid/TP30001185-CH10-SW1)
