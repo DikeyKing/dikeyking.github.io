@@ -288,15 +288,15 @@ if (output != NULL) {
 CIContext 的声明方式分别是：
 
 ```
-    eaglctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2]; 
-    context = [CIContext contextWithEAGLContext:eaglctx]; // 记得复用 CIContext
+eaglctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];   
+context = [CIContext contextWithEAGLContext:eaglctx]; // 记得复用 CIContext
 ```
 
 以及：
 
 ```
-    // context = [CIContext contextWithOptions: nil];
-    context = [CIContext contextWithOptions: [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:kCIContextUseSoftwareRenderer]];
+// context = [CIContext contextWithOptions: nil];  
+context = [CIContext contextWithOptions: [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:kCIContextUseSoftwareRenderer]];
 ```
 
 可见 Core Image 比起 vImage 还是快了一些，API 也更简单，所以如果版本允许（高版本API），更推荐使用Core Image 进行CVPixelBuffer的各种处理。
