@@ -1,0 +1,124 @@
+I"�<h1 id="1-app-状态">1. APP 状态</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>APP 状态</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Not running</td>
+      <td>未启动或已被终止</td>
+    </tr>
+    <tr>
+      <td>Inactive</td>
+      <td>APP正在前台运行，但是还不能接受触控事件，该过程可能正在执行其它代码，这个状态不会太久。</td>
+    </tr>
+    <tr>
+      <td>Active</td>
+      <td>APP正在前台运行，可以响应事件。APP正常运行时候的状态，并且响应用户状态。</td>
+    </tr>
+    <tr>
+      <td>Background</td>
+      <td>此时执行代码的时候，APP不在屏幕上显示。当用户退出应用时候，系统在暂停应用前，会将APP切置background状态。另外一种情况是，系统先将APP在后台启动，提供后台间隙来处理类似网络下载、定位、远程消息通知处理的事件。尽量不要在后台进行任务。</td>
+    </tr>
+    <tr>
+      <td>Suspended</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="2-状态切换">2. 状态切换</h1>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/APP_life_cycle.png" alt="APP_life_cycle" /></p>
+
+<h1 id="3-系统回调">3. 系统回调</h1>
+
+<h2 id="1-did-finish-launching">1. Did Finish Launching</h2>
+
+<p>当用于启动完成时候调用，可以在这里执行自定义代码</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">application</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">,</span>
+<span class="n">didFinishLaunchingWithOptions</span> <span class="nv">launchOptions</span><span class="p">:</span>
+<span class="p">[</span><span class="kt">UIApplication</span><span class="o">.</span><span class="kt">LaunchOptionsKey</span><span class="p">:</span> <span class="kt">Any</span><span class="p">]?)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="p">{</span>
+    <span class="c1">// 应用启动之后，第一个执行自定义代码的地方</span>
+    <span class="k">return</span> <span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="2-will-resign-active">2. Will Resign Active</h2>
+
+<p>第二个被调用的方法。</p>
+
+<ul>
+  <li>当APP从foreground 状态或 active 状态离开的时候调用</li>
+  <li>当用户退出应用的时候调用</li>
+  <li>系统闹钟或电话等中断事件发生的时候调用</li>
+</ul>
+
+<p>这个方法适合暂停正在进行的任务或者保存用户的数据和进度。</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">applicationWillResignActive</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/*
+    active -&gt; inactive 时候调用。电话、闹钟会触发，用户退出应用到后台过程中也会触发。
+    在这个方法中，适合暂停一些正在进行的任务。比如：定时器、图形渲染回调、正在进行的游戏等。
+    */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h2 id="3-did-enter-background">3. Did Enter Background</h2>
+
+<p>在 applicationWillResignActive(_:)  方法之后调用。此时应用已经在后台状态。</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">applicationDidEnterBackground</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/*
+    在这个方法中适合做的事情
+      1. 释放公共资源 
+      2. 保存用户数据
+      3. invalidate 定时器
+      4. 保存APP状态相关数据，用于恢复到当前状态(后续APP可能会被终止)
+  
+    当APP 拥有后台运行权限的时候，这个方法可以当做 applicationWillTerminate:使用
+    */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="4-will-enter-foreground">4. Will Enter Foreground</h2>
+
+<p>background -&gt; active 中间发生 ，在applicationDidBecomeActive(_:) 之前调用。这个方法可以用来取消在 background 中进行的各种操作。</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">applicationWillEnterForeground</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* background -&gt; active 间隙发生
+}
+</span></code></pre></div></div>
+
+<h2 id="5-did-become-active">5. Did Become Active</h2>
+
+<p>inactive -&gt; active 时候发生；用户忽略打断时候也会发生 (电话、闹钟)</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">applicationDidBecomeActive</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/*
+     适合
+        1. 重启inactive时候被暂停或者未尚未启动的任务
+        2. 如果之前在后台，刷新用户界面
+    */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h2 id="6-will-terminate">6. Will Terminate</h2>
+
+<p>这个方法通知APP，APP 将被终止，并从内存中清除。和 applicationDidEnterBackground(_:) 方法有一些类似，用于不一样的类型的APP</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">applicationWillTerminate</span><span class="p">(</span><span class="n">_</span> <span class="nv">application</span><span class="p">:</span> <span class="kt">UIApplication</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/*
+    APP即将被终止时候调用，可以适当保存数据，也可以参考applicationDidEnterBackground:.
+    */</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>参考</strong>: Apple Education. “App Development with Swift.” Apple Inc. - Education, 2019. Apple Books.</p>
+
+<!-- more -->
+
+:ET

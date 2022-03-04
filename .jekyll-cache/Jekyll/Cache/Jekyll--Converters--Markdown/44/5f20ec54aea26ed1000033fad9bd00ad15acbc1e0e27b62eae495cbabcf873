@@ -1,0 +1,30 @@
+I"�
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/viewcontrollerlifecycle.png" alt="图片" /></p>
+
+<p><strong>View Did Load ：</strong></p>
+
+<p>在通过storyboard或者代码初始化一个 view controller之后， view controller将会将会加载视图到内存中。这个过程创建了controller会管理的视图。在 view controller完成特定视图加载之后，viewDidLoad() 方法就会被调用。controller 就可以利用这个机会完成一些依赖视图已经被加载和准备完成的操作。</p>
+
+<p>举个栗子：我们可以乘着视图初始化完成添加一个 updateUIColor() 方法，来设置各种控件的颜色。另外一些典型的操作比如<strong>增加额外视图</strong>、<strong>网络请求</strong>、或者<strong>数据访问</strong>。</p>
+
+<p><strong>viewWillAppear(_:) ：</strong></p>
+
+<p>这个方法在view出现在屏幕之前调用，<strong>并且每次调用</strong>。所以非常合适做一些需要在视图出现之前完成的操作，并且需要每次调用的操作。举个栗子：比如用户当前所处的<strong>地理位置</strong>，每次进入界面都可以更新它。另外一些包括：<strong>开始网络请求</strong>、<strong>刷新界面</strong>（如status bar，navigation bar， table views）、<strong>旋转屏幕方位</strong>。</p>
+
+<p><strong>viewDidAppear(_:)：</strong></p>
+
+<p>viewDidAppear(_: )  将会在界面出现在屏幕的时候被调用。适合将一些<strong>需要每次调用，并且比较费时的操作</strong>放到这个方法中，来保证界面展示流畅。可供参考的操作：在这个方法中进行网络数据下载等耗时操作，HUD或者动画提醒用户。</p>
+
+<p><strong>viewWillDisappear(_:)</strong>：</p>
+
+<p>这个方法在界面将要消失在屏幕的时候调用。这个方法会在用户点击<strong>返回</strong>、<strong>tab</strong>、<strong>presenting 或 dismissing Model View</strong>的时候调用。这个方法适合<strong>保存编辑</strong>、<strong>隐藏键盘</strong>、<strong>取消网络</strong>请求等操作。</p>
+
+<p><strong>viewDidDisappear(_:)</strong>：</p>
+
+<p>当视图从屏幕上被移出的时候调用，典型的情况，当用户通过navigation去了另外一个界面的时候。这个方法执行的时候能确保视图已经消失。所以适合去做一些和视图相关的停止逻辑。比如，<strong>停止正在播放的音乐</strong>或者<strong>移除消息通知</strong>。</p>
+
+<p><strong>参考</strong>: Apple Education. “App Development with Swift.” Apple Inc. - Education, 2019. Apple Books.</p>
+
+<!-- more -->
+
+:ET

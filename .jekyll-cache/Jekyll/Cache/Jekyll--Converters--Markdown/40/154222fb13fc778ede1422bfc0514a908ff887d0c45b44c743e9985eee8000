@@ -1,0 +1,387 @@
+I"�_<h1 id="支持特定架构的框架实现">支持特定架构的框架实现</h1>
+
+<h1 id="前言">前言</h1>
+
+<p>有时候，我们在给第三方移动端提供工具库的时候，会出现不兼容x86的情况。</p>
+
+<ul>
+  <li>比如：我们引用的一个框架不包含x86_64架构，导致我们的库无法编译出x86架构版本</li>
+  <li>比如：框架本身就是为相机或AR等特定功能而生，甚至剔除x86_64架构代码可以节省库的大小</li>
+</ul>
+
+<p>这些情况下，我们能只编译arm64，放弃其它架构吗？答案当然是NO。</p>
+
+<p>直接放弃32位arm和x86架构的支持，非常直接的，会带来两个负面效果。</p>
+
+<ol>
+  <li>如果应用有上千万的用户，其中很小的比例就可能几十万用户，放弃支持等于放弃这部分用户。（iPhone 5S 年代CPU的用户）</li>
+  <li>开发者原本使用模拟器进行设备兼容性调试和开发，接入仅64位的库后，工程无法在模拟器继续编译，给调试和屏幕大小适配带来困扰</li>
+</ol>
+
+<p>无论是1还是2，都是无法接受的结果。我们需要找到一种方案，在支持支持arm64的情况下缩减体积。</p>
+
+<h1 id="思路">思路</h1>
+
+<p>我们要解决的核心问题有两个</p>
+
+<ol>
+  <li>解决第三方代码不支持指定架构导致无法编译对应架构的问题</li>
+  <li>在支持非目标时候，我们编译了很多无用的代码。</li>
+</ol>
+
+<p>解决思路也很简单</p>
+
+<ol>
+  <li>使用 <strong>TargetConditionals.h</strong> 的架构定义来区分架构，在不支持的架构中省去这部分功能和代码</li>
+  <li>非目标架构情况，使用 <strong>TargetConditionals.h</strong> 屏蔽所有代码</li>
+  <li>掩盖掉所有内部修饰痕迹</li>
+</ol>
+
+<h1 id="栗子">栗子</h1>
+
+<p>比如我们有一个 OnlyARM.framework 我们要做到</p>
+
+<ul>
+  <li>arm64：功能正常</li>
+  <li>armv7 / x86_64：功能无法使用，但是不会导致工程编译问题</li>
+</ul>
+
+<p>我们核心 OnlyARMCore ，可能是这样子的：</p>
+
+<p>OnlyARMCore.h</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="cp">#import &lt;Foundation/Foundation.h&gt;
+</span>
+<span class="k">@interface</span> <span class="nc">OnlyARMCore</span> <span class="p">:</span> <span class="nc">NSObject</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">shared</span><span class="p">;</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">saySomething</span><span class="p">;</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">sayHi</span><span class="p">;</span>
+
+<span class="k">@end</span>
+</code></pre></div></div>
+
+<p>OnlyARMCore.m</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="cp">#import "OnlyARMCore.h"
+#import "OnlyEvil64.h"
+</span>
+<span class="k">@implementation</span> <span class="nc">OnlyARMCore</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">shared</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="n">OnlyARMCore</span> <span class="o">*</span><span class="n">core</span><span class="p">;</span>
+    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="p">[</span><span class="n">OnlyARMCore</span> <span class="nf">new</span><span class="p">];</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="n">core</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">saySomething</span>
+<span class="p">{</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"Hello~"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">sayHi</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">OnlyEvil64</span> <span class="nf">evil64</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+</code></pre></div></div>
+
+<p>其中，OnlyEvil64 是邪恶的第三方框架，仅仅支持64位架构，这时候，如果我们想要编译支持所有架构的自己框架，就会得到如下结果</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Undefined symbols for architecture arm64:
+  "_OBJC_CLASS_$_OnlyEvil64", referenced from:
+      objc-class-ref in OnlyARMCore.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+</code></pre></div></div>
+
+<p>于是要在非arm64架构中干掉 <strong>OnlyEvil64</strong></p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#if (TARGET_CPU_ARM64)
+</span>    <span class="p">[</span><span class="n">OnlyEvil64</span> <span class="nf">evil64</span><span class="p">];</span>
+<span class="cp">#else
+#endif
+</span></code></pre></div></div>
+
+<p>但是，回到主题，如果我们的功能，原本就仅仅支持64位设计呢？我们其实可以直接区分两个OnlyARMCore；一个OnlyARMCore for arm64，一个for others。那我们可以这么写：</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//</span>
+<span class="c1">//  OnlyARMCore.m</span>
+<span class="c1">//  OnlyARM</span>
+<span class="c1">//</span>
+<span class="c1">//  Created by Dikey on 2021/8/12.</span>
+<span class="c1">//</span>
+
+<span class="cp">#if (TARGET_CPU_ARM64)
+</span>
+<span class="cp">#import "OnlyARMCore.h"
+#import "OnlyEvil64.h"
+</span>
+<span class="k">@implementation</span> <span class="nc">OnlyARMCore</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">shared</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="n">OnlyARMCore</span> <span class="o">*</span><span class="n">core</span><span class="p">;</span>
+    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="p">[</span><span class="n">OnlyARMCore</span> <span class="nf">new</span><span class="p">];</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="n">core</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">saySomething</span>
+<span class="p">{</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"Hello~"</span><span class="p">);</span>
+    
+<span class="p">}</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">sayHi</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">OnlyEvil64</span> <span class="nf">evil64</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+
+<span class="cp">#else
+</span>
+<span class="cp">#import "OnlyARMCore.h"
+</span>
+<span class="k">@implementation</span> <span class="nc">OnlyARMCore</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">shared</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="n">OnlyARMCore</span> <span class="o">*</span><span class="n">core</span><span class="p">;</span>
+    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="p">[</span><span class="n">OnlyARMCore</span> <span class="nf">new</span><span class="p">];</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="n">core</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">saySomething</span>
+<span class="p">{</span>
+    <span class="c1">// 留空</span>
+<span class="p">}</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">sayHi</span>
+<span class="p">{</span>
+    <span class="c1">// 留空</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+
+<span class="cp">#endif
+</span></code></pre></div></div>
+
+<p>到这里，我们又发现了新的问题，如果说我们的这个类，有200个方法，我们会需要重新实现200次像是 - (void)sayHi 这样的空函数，这既重复又容易出错。</p>
+
+<p>有没有一劳永逸解决的方法呢？我们看了看 <strong>@interface OnlyARMCore : NSObject</strong> 中的NSObject，想起来了古老的消息转发。</p>
+
+<p>很简单了，只要在 #if (TARGET_CPU_ARM64)  #else 和 #endif之间处理掉所有非arm64架构的方法就可以。</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">@implementation</span> <span class="nc">OnlyARMCore</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="nf">resolveInstanceMethod</span><span class="p">:(</span><span class="n">SEL</span><span class="p">)</span><span class="nv">name</span>
+<span class="p">{</span>
+    <span class="n">class_addMethod</span><span class="p">([</span><span class="n">self</span> <span class="nf">class</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">IMP</span><span class="p">)</span><span class="n">OnlyARMCore_dynamicMethodIMP</span><span class="p">,</span> <span class="s">"v@:"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">super</span> <span class="nf">resolveInstanceMethod</span><span class="p">:</span><span class="n">name</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="nf">resolveClassMethod</span><span class="p">:(</span><span class="n">SEL</span><span class="p">)</span><span class="nv">name</span>
+<span class="p">{</span>
+    <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="n">object_getClass</span><span class="p">([</span><span class="n">self</span> <span class="nf">class</span><span class="p">]);</span>
+    <span class="n">class_addMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">IMP</span><span class="p">)</span><span class="n">OnlyARMCore_dynamicMethodIMP</span><span class="p">,</span> <span class="s">"@:@"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">super</span> <span class="nf">resolveClassMethod</span><span class="p">:</span><span class="n">name</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+</code></pre></div></div>
+
+<p>然后，为了最小化痕迹，我们可以把这部分代码抽象到catagory中。</p>
+
+<p>OnlyARMCore+OnlyARMCore_DynamicMethod.h</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//</span>
+<span class="c1">//  OnlyARMCore+OnlyARMCore_DynamicMethod.h</span>
+<span class="c1">//  OnlyARM</span>
+<span class="c1">//</span>
+<span class="c1">//  Created by Dikey on 2021/8/12.</span>
+<span class="c1">//</span>
+
+<span class="cp">#if (TARGET_CPU_ARM64)
+#else
+</span>
+<span class="cp">#import "OnlyARMCore.h"
+</span>
+<span class="k">@implementation</span> <span class="nc">OnlyARMCore</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">shared</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="n">OnlyARMCore</span> <span class="o">*</span><span class="n">core</span><span class="p">;</span>
+    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="p">[</span><span class="n">OnlyARMCore</span> <span class="nf">new</span><span class="p">];</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="n">core</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+
+<span class="k">@interface</span> <span class="nc">OnlyARMCore</span> <span class="p">(</span><span class="nl">OnlyARMCore_DynamicMethod</span><span class="p">)</span>
+<span class="k">@end</span>
+
+<span class="cp">#endif
+</span></code></pre></div></div>
+
+<p>OnlyARMCore+OnlyARMCore_DynamicMethod.m 中</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//</span>
+<span class="c1">//  OnlyARMCore+OnlyARMCore_DynamicMethod.m</span>
+<span class="c1">//  OnlyARM</span>
+<span class="c1">//</span>
+<span class="c1">//  Created by Dikey on 2021/8/12.</span>
+<span class="c1">//</span>
+
+<span class="cp">#if (TARGET_CPU_ARM64)
+</span>
+<span class="cp">#else
+</span>
+<span class="cp">#import "OnlyARMCore+OnlyARMCore_DynamicMethod.h"
+#include</span> <span class="cpf">&lt;objc/runtime.h&gt;</span><span class="cp">
+</span>
+<span class="kt">void</span> <span class="nf">OnlyARMCore_dynamicMethodIMP</span><span class="p">(</span><span class="n">id</span> <span class="n">self</span><span class="p">,</span> <span class="n">SEL</span> <span class="n">_cmd</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"OnlyARMCore &gt;&gt; 不支持非arm64以外的机型调用"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">@implementation</span> <span class="nc">OnlyARMCore</span> <span class="p">(</span><span class="nl">OnlyARMCore_DynamicMethod</span><span class="p">)</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="nf">resolveInstanceMethod</span><span class="p">:(</span><span class="n">SEL</span><span class="p">)</span><span class="nv">name</span>
+<span class="p">{</span>
+    <span class="n">class_addMethod</span><span class="p">([</span><span class="n">self</span> <span class="nf">class</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">IMP</span><span class="p">)</span><span class="n">OnlyARMCore_dynamicMethodIMP</span><span class="p">,</span> <span class="s">"v@:"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">super</span> <span class="nf">resolveInstanceMethod</span><span class="p">:</span><span class="n">name</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="nf">resolveClassMethod</span><span class="p">:(</span><span class="n">SEL</span><span class="p">)</span><span class="nv">name</span>
+<span class="p">{</span>
+    <span class="n">Class</span> <span class="n">class</span> <span class="o">=</span> <span class="n">object_getClass</span><span class="p">([</span><span class="n">self</span> <span class="nf">class</span><span class="p">]);</span>
+    <span class="n">class_addMethod</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">IMP</span><span class="p">)</span><span class="n">OnlyARMCore_dynamicMethodIMP</span><span class="p">,</span> <span class="s">"@:@"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">super</span> <span class="nf">resolveClassMethod</span><span class="p">:</span><span class="n">name</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+
+<span class="cp">#endif
+</span></code></pre></div></div>
+
+<p>但是这时候，我们又有疑问了</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Method</span> <span class="n">definition</span> <span class="k">for</span> <span class="err">'</span><span class="n">sayHi</span><span class="err">'</span> <span class="n">not</span> <span class="n">found</span>
+
+<span class="n">OnlyARMDemo</span><span class="o">/</span><span class="n">OnlyARM</span><span class="o">/</span><span class="n">OnlyARMCore</span><span class="k">+</span><span class="n">OnlyARMCore_DynamicMethod</span><span class="p">.</span><span class="n">h</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span> <span class="n">Method</span> <span class="n">definition</span> <span class="k">for</span> <span class="err">'</span><span class="n">saySomething</span><span class="err">'</span> <span class="n">not</span> <span class="n">found</span>
+</code></pre></div></div>
+
+<p>因为编译器在对外的.h 文件，我们是没有区分架构的</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//</span>
+<span class="c1">//  OnlyARMCore.h</span>
+<span class="c1">//  OnlyARM</span>
+<span class="c1">//</span>
+<span class="c1">//  Created by Dikey on 2021/8/12.</span>
+<span class="c1">//</span>
+
+<span class="cp">#import &lt;Foundation/Foundation.h&gt;
+</span>
+<span class="k">@interface</span> <span class="nc">OnlyARMCore</span> <span class="p">:</span> <span class="nc">NSObject</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">shared</span><span class="p">;</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">saySomething</span><span class="p">;</span>
+
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">sayHi</span><span class="p">;</span>
+
+<span class="k">@end</span>
+</code></pre></div></div>
+
+<p>在外面看来（或从编译器角度看），这时候是同时编译了64位和其它架构的。但是实际上在.m中，非64位架构，实际上想 <strong>saySomething</strong> 或者 <strong>sayHi</strong> 时候，实例方法和类方法分别是转发给了转发给了</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">+</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="nf">resolveInstanceMethod</span><span class="p">:(</span><span class="n">SEL</span><span class="p">)</span><span class="nv">name</span>
+</code></pre></div></div>
+
+<p>和</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">+</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="nf">resolveClassMethod</span><span class="p">:(</span><span class="n">SEL</span><span class="p">)</span><span class="nv">name</span>
+</code></pre></div></div>
+
+<p>在以上方法中，我们最终都将消息指向了 <strong>OnlyARMCore_dynamicMethodIMP</strong> ，来告诉外部开发者，我们的功能只在特定架构生效。</p>
+
+<p>这时候，我们需要告诉编译器，这部分检查可以略过</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//</span>
+<span class="c1">//  OnlyARMCore+OnlyARMCore_DynamicMethod.h</span>
+<span class="c1">//  OnlyARM</span>
+<span class="c1">//</span>
+<span class="c1">//  Created by Dikey on 2021/8/12.</span>
+<span class="c1">//</span>
+
+<span class="cp">#if (TARGET_CPU_ARM64)
+#else
+</span>
+<span class="cp">#import "OnlyARMCore.h"
+</span>
+<span class="cp">#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
+</span>
+<span class="k">@implementation</span> <span class="nc">OnlyARMCore</span>
+
+<span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="n">shared</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="n">OnlyARMCore</span> <span class="o">*</span><span class="n">core</span><span class="p">;</span>
+    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="p">[</span><span class="n">OnlyARMCore</span> <span class="nf">new</span><span class="p">];</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="n">core</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">@end</span>
+
+<span class="k">@interface</span> <span class="nc">OnlyARMCore</span> <span class="p">(</span><span class="nl">OnlyARMCore_DynamicMethod</span><span class="p">)</span>
+<span class="k">@end</span>
+
+<span class="cp">#pragma clang diagnostic pop
+</span>
+<span class="cp">#endif
+</span></code></pre></div></div>
+
+<p>我们忽略掉了所有push 和 pop 之间的warning</p>
+
+<div class="language-objectivec highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
+</span>
+<span class="c1">// warnings ignored </span>
+
+<span class="cp">#pragma clang diagnostic pop
+</span></code></pre></div></div>
+
+<h1 id="思考">思考</h1>
+
+<ul>
+  <li>Objective-C的动态机制，使得很多操作变成可能；但是要记住，更多的可能性意味着可能更难debug；好的代码不应该丢掉可维护性和可读性。</li>
+  <li>Swift 笔者还未尝试，理论上也是可以通过@objc使用Objective-C的动态特性，但是Swift毕竟本身是静态类型的语言，Swift应该会有更适合的方式吧。</li>
+  <li>目前认知：可能还是支持x86架构会更好，在代码中通过宏定义来屏蔽x86的实现；以避免对第三方工程的入侵。</li>
+  <li>至于32位，最近的移动设备是 iPhone 5；已经随着时间的长河成为了历史，已不太有支持的必要。</li>
+</ul>
+
+<h1 id="demo">Demo</h1>
+
+<p><a href="https://github.com/DikeyKing/OnlyARMDemo.git">GitHub - DikeyKing/OnlyARMDemo: A Example of use arm64 only framework</a></p>
+:ET

@@ -1,0 +1,131 @@
+I"<h4 id="动机">动机：</h4>
+
+<p>所在项目封装的framework基本都是OC写的，希望在旧的项目中逐步用新的技术迭代。但是Swift和OC混编有两个比较重要的问题。</p>
+
+<ol>
+  <li>Swift ABI不稳定</li>
+  <li>会带来APP体积的明星增加，iOS 8 的时候是夸张的 <strong>8M</strong></li>
+</ol>
+
+<p>而这次的xcode 10.2.1 的更新带来了一些变换：</p>
+
+<p>因为Swift 5.0 之前的ABI (<em>application binary interface</em>)并不稳定，所以导致Swift的runtime没有包含在iOS系统之中，而每次APP打包都会带上Swift的runtime，这样就会造成带Swift的APP体积增长非常明显。这个问题随着xcode 10.2.1 和 iOS 10.2的发布解决了：</p>
+
+<p>看Xcode  10.2.2 版本是怎么说的：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Swift apps no longer include dynamically linked libraries for the Swift standard library and Swift SDK overlays in build variants for devices running iOS 12.2, watchOS 5.2, and tvOS 12.2. As a result, Swift apps can be smaller when they’re shipped in the App Store, deployed for testing using TestFlight, or thinned in an app archive for local development distribution.
+</code></pre></div></div>
+
+<p>重点：苹果表示Swift 不再动态链接Swift标准库，这些标准库内置在 iOS 12.2 系统的各种设备中，这样就可以减小APP Store 中可以下载的APP 体积。</p>
+
+<p>所以想尝试通过OC和Swift混编，看看体积的影响。</p>
+
+<h4 id="过程">过程：</h4>
+
+<ol>
+  <li><a href="https://developer.apple.com/documentation/swift/imported_c_and_objective-c_apis/importing_objective-c_into_swift&gt;">将OC导入Swift</a>：framework中不能创建 Objective-C Generated Interface Header，如果framework是静态库，可以直接调用OC的类，如果是动态库，目前会报找不到文件错误，正在研究如何解决</li>
+  <li>
+    <p><a href="https://developer.apple.com/documentation/swift/imported_c_and_objective-c_apis/importing_swift_into_objective-c">在Objective-C中使用Swift</a> ： 非常简单，在使用OC的代码中导入文件 <code class="language-plaintext highlighter-rouge">#import &lt;ProductName/ProductModuleName-Swift.h&gt;</code>；在</p>
+  </li>
+  <li>写完的framework提供给纯OC的项目调用，记得把Swift标准库带上</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dyld: Library not loaded: @rpath/libSwiftCore.dylib
+  Referenced from: /private/var/containers/Bundle/Application/6A98320D-9E8F-469C-91BD-EB2AB8D4AEA0/DynamicDemo.app/Frameworks/InsightSDK_dylib.framework/InsightSDK_dylib
+  Reason: image not found
+</code></pre></div></div>
+
+<p>需要在build Setting中设置</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Build Settings &gt; Always Embed Swift Standard Libraries
+</code></pre></div></div>
+
+<ol>
+  <li>这里有一个问题，根据 <a href="https://developer.apple.com/library/archive/qa/qa1881/_index.html">https://developer.apple.com/library/archive/qa/qa1881/_index.html</a> 的说法：</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Swift standard libraries are copied into a bundle if and only if you are building an application and this application contains Swift source files by itself.
+
+If you are building an app that does not use Swift but embeds content such as a framework that does, Xcode will not include these libraries in your app. As a result, your app will crash upon launching with an error message looking as follows:
+
+dyld: Library not loaded: @rpath/libswiftCoreGraphics.dylib
+  Referenced from: /private/var/mobile/Containers/Bundle/Application/696F0EAD-E2A6-4C83-876F-07E3D015D167/&lt;Your_App&gt;.app/Frameworks/&lt;Framework_Name&gt;.framework/&lt;Framework_Name&gt;
+  Reason: image not found
+  
+Setting Embedded Content Contains Swift Code to YES
+</code></pre></div></div>
+
+<p>按照我的理解，实际上还是把Swift一些标准的动态库库给包含进去了……</p>
+
+<h4 id="体积影响">体积影响：</h4>
+
+<p>framework with Swift 对体积的影响，</p>
+
+<p>关闭bitcode，加入Swift版本，关闭bitcode：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Device Type</th>
+      <th style="text-align: left">Download Size</th>
+      <th style="text-align: left">Install Size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Universal</td>
+      <td style="text-align: left">17.8 MB</td>
+      <td style="text-align: left">31 MB</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">iPad Pro (9.7-inch)</td>
+      <td style="text-align: left">13.5 MB</td>
+      <td style="text-align: left">21.9 MB</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">iPhone XS</td>
+      <td style="text-align: left">13.5 MB</td>
+      <td style="text-align: left">21.9 MB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>关闭bitcode，关闭Swift，关闭bitcode：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Device Type</th>
+      <th style="text-align: left">Download Size</th>
+      <th style="text-align: left">Install Size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Universal</td>
+      <td style="text-align: left">12.8 MB</td>
+      <td style="text-align: left">17.5 MB</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">iPad Pro (9.7-inch)</td>
+      <td style="text-align: left">11.2 MB</td>
+      <td style="text-align: left">14.8 MB</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">iPhone XS</td>
+      <td style="text-align: left">11.2 MB</td>
+      <td style="text-align: left">14.8 MB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>可以看到：如果第三方APP是纯OC的项目，引入Swift会导致下载体积增加 <strong>2.3M</strong>，安装体积增加<strong>7.1M</strong>。</p>
+
+<h4 id="结论">结论：</h4>
+
+<p>如果是封装framework给自己用，我觉得增加的2.3M体积已经完全可以忽略不计，可以迁徙到新的技术上去，用Swift提高效率，编写更好的代码。</p>
+
+<p>但是如果是对framework的体积大小非常敏感，从目前结果来看，混编Framework还是不能达到预期。</p>
+
+<!-- more -->
+:ET

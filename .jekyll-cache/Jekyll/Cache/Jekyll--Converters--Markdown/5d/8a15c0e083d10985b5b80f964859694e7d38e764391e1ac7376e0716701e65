@@ -1,0 +1,136 @@
+I"� <p>#</p>
+
+<p>[TOC]</p>
+
+<h1 id="1-core-ml-简单介绍">1. Core ML 简单介绍</h1>
+
+<h2 id="core-ml">Core ML</h2>
+
+<p>​        2014 年， iOS 8 发布，苹果带来了自己的渲染引擎 Metal。在 iOS 上进行机器学习成为可能。开发者可以通过Metal 直接和GPU打交道，利用GPU 做并行计算。  15、16 两年，苹果在完成 iOS 9 和iOS 10 两代系统更新时带来了 BNNS （Basic Neural Network Subroutines）和 MPSCNN 。前者利用CPU 上的高效指令集完成数学计算，后者在 Metal 上提供了 高性能的 shader，利用这些 shader ，用户不再需要直接操作系统硬件相关的C函数API，可以编写特定的shader 在 GPU上高效完成神经网络计算，当然，这一切都只是开始，听上去要写很多代码。</p>
+
+<p>​       经过前面几代的铺垫和苹果背地里偷偷摸摸的用功，在2017年，第一代 Core ML （iOS 11）横空出世。现在，对于iOS 开发者来说，Shader都不用写了，在iOS平台，利用机器学习完成一些识别、分类的任务，变得非常简单。而Core ML 的出现，和之前几代系统的更新离不开关系，苹果官方文档的架构说明了这一点。</p>
+
+<p>​</p>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/e3663268-5db4-42c9-a7f0-2114920a9f1f.png" alt="e3663268-5db4-42c9-a7f0-2114920a9f1f" /></p>
+
+<center>Core ML 架构，底层基于 Metal、Accelerate 和 BNNS </center>
+
+<h2 id="core-ml-2">Core ML 2</h2>
+
+<p>​       在 2018 年，苹果推出Core ML 2 。主要两方面提升，速度更快，模型体积更小。前者利用新的批量预测方法消除了预处理和取出的操作，将所有数据一次性发给 GPU，利用 GPU Pipeline 将其逐个计算的同时依次取出结果。后者降低原来32位的权重量化成16位、8位甚至4位从而降低模型大小。</p>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/Screen Shot 2019-12-12 at 8.25.39 PM.jpg" alt="Screen Shot 2019-12-12 at 8.17.26 PM" /></p>
+
+<center> 通过Batch的方式替代Loop，提高速度 </center>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/Screen Shot 2019-12-12 at 8.17.26 PM.jpg" alt="Screen Shot 2019-12-12 at 8.17.26 PM" /></p>
+
+<center> 对原来32位权重的模型进行量化，在效果和体积之间做一个平衡 </center>
+
+<h2 id="core-ml-3">Core ML 3</h2>
+
+<p>​       在 2019 年的 Core ML 3 中，增加了各种高级神经网络支持，现在 Core ML 的功能可以拓展到图像、视频、声音和其他富媒体神经网络。</p>
+
+<p>​      同时支持在本机进行模型训练 (短时间)。同时可以将Keras、 TensorFlow、PyTorch 等等框架的模型转换到 MLMODEL。</p>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/0_1mDdbXzQtGiVT8U0.png" alt="0_1mDdbXzQtGiVT8U0" /></p>
+<center> 更多的模型支持 </center>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/Screen Shot 2019-12-12 at 8.46.57 PM.jpg" alt="Screen Shot 2019-12-12 at 8.46.57 PM" /></p>
+<center> 发音信息、语音检测、声学特性检测(频域) </center>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/Screen Shot 2019-12-12 at 8.47.02 PM.jpg" alt="Screen Shot 2019-12-12 at 8.47.02 PM" /></p>
+<center> 自然语言文本分析、情绪分析、目录分类 </center>
+
+<h2 id="npu">NPU</h2>
+
+<p>​        苹果不止在系统中增加了Core ML 框架，还在iPhone X 开始的处理器芯片上加上专门用于神经网络计算的模块 (Neural network Processing Unit ，以下简称NPU)。可能是在 A11( iPhone 8 ) 上尝到甜头，iPhone XR  上的NPC 直接来到了 5.79 <strong>\(mm^{2}\)</strong> ，是 A10 上 1.83 <strong>\(mm^{2}\)</strong>  的 3 倍面积。</p>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/benchmark_iphone_11.jpg" alt="benchmark_iphone_11" /></p>
+<center>iPhone XR 上，core ML 性能对比</center>
+
+<h2 id="mlmodel">MLModel</h2>
+
+<p>​        MLModel 是机器学习模型所有细节的封装。它在整个APP中充当基础数据的角色。后缀是.mlmodel</p>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/4b0ecf58-a51a-4bfa-a361-eb77e59ed76e.png" alt="" /></p>
+
+<center>Core ML 整体</center>
+
+<p>​</p>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/Screen Shot 2019-12-12 at 4.10.47 PM.jpg" alt="Screen Shot 2019-12-12 at 4.10.47 PM" /></p>
+
+<center> 通过xcode可以直接打开.mlmodel 文件查看模型属性。</center>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/1_eIk-Tm-U5sMC2lxPRb4l-g.png" alt="1_eIk-Tm-U5sMC2lxPRb4l-g" /></p>
+
+<center>Core ML 3 支持多种框架的模型导入</center>
+
+<h1 id="2-create-ml-识别阿猫阿狗">2. Create ML 识别阿猫阿狗</h1>
+
+<h2 id="介绍">介绍</h2>
+
+<p>​      一个非常强大的软件（堪比storyboard），可以完成数据集的训练、测试，并且生成CoreML 模型。Create ML 提供了很多歌模型模板，可以用于物体检测、分类、声音分类、文本分类等等。</p>
+
+<p>​      另外非常强大的是，Core ML还支持 eGPU 训练。用Mac Mini、MBP 外接显卡就可以加速训练。</p>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/WechatIMG2065.png" alt="WechatIMG2065" /></p>
+<center>Create ML 默认已经包含一些模板</center>
+
+<h2 id="训练">训练</h2>
+
+<p>需要提供训练数据集、测试数据集</p>
+
+<ol>
+  <li>训练数据集：包含某一些特征</li>
+  <li>验证数据集：包含在训练数据集中 (需要达到一点数目)</li>
+  <li>测试数据集：用来测试准确性</li>
+</ol>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/20721576156608.jpg" alt="20721576156608_.pic_hd" /></p>
+
+<h2 id="使用">使用</h2>
+
+<p>推断</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    // MARK: - Doing inference
+    typealias Prediction = (String, Double)
+    
+    func predict(pixelBuffer: CVPixelBuffer) {
+        // Measure how long it takes to predict a single video frame.
+        startTime = CACurrentMediaTime()
+        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer)
+        try? handler.perform([request])
+    }
+</code></pre></div></div>
+
+<p>完成的回调</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    func requestDidComplete(request: VNRequest, error: Error?) {
+        if let observations = request.results as? [VNClassificationObservation] {
+            // The observations appear to be sorted by confidence already, so we
+            // take the top and map them to an array of (String, Double) tuples.
+            let top5 = observations.prefix(through: 0)
+                .map { ($0.identifier, Double($0.confidence)) }
+            DispatchQueue.main.async {
+                self.show(results: top5)
+            }
+        }
+    }
+</code></pre></div></div>
+
+<h1 id="3-结果">3. 结果</h1>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/20751576159943.jpg" alt="20751576159943_.pic" /></p>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/20761576159944.jpg" alt="20761576159944_.pic" /></p>
+
+<h1 id="4-参考">4. 参考</h1>
+
+<p><a href="https://developer.apple.com/videos/play/wwdc2018/708/&gt;">What’s New in Core ML Part 1</a><br />
+<a href="https://developer.apple.com/videos/play/wwdc2018/709/&gt;">What’s New in Core ML Part 2</a><br />
+<a href="http://artizans.ai/posts/coreml-benchmark-on-iphone-11/">iPhone 11 Machine Learning Performance: a Benchmark</a><br />
+<a href="https://heartbeat.fritz.ai/whats-new-in-core-ml-3-d108d352e50a/">What’s new in Core ML 3</a><br />
+<a href="https://juejin.im/post/5b255dba6fb9a00e43466121">WWDC 2018：更快更强的 Core ML 2.0</a></p>
+:ET

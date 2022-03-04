@@ -1,0 +1,199 @@
+I"�C<h1 id="2020aug4-git工程体积优化">2020.Aug.4-git工程体积优化</h1>
+
+<h2 id="提示谨慎操作"><strong>提示：谨慎操作</strong></h2>
+
+<p><strong>因为操作会改变git历史，笔者全程使用folk出的工程操作，然后将优化完的工程作为替代品使用。</strong></p>
+
+<p><strong>请尽量folk工程操作。</strong></p>
+
+<h1 id="1-起因">1. 起因</h1>
+
+<p>因为工程初始阶段，一些同事上传一些git无法diff的文件（比如mp4、ktx、.xcuserstate）等等，导致工程体积急剧增加，达到了14GB（其中.git 体积12.88GB）。很显然，历史提交中，有很多和代码没有关系又无法被git记录的文件。</p>
+
+<h1 id="2-经过">2. 经过</h1>
+
+<p>工欲善其事，必先利其器，我们需要找到需要优化的文件，然后处理掉。</p>
+
+<ol>
+  <li><strong>coreutils：coreutils</strong> 中的 <strong>numfmt</strong> 组件可以非常快速地列出文件详情，查找可以优化的文件。</li>
+  <li><strong>git lfs：</strong>一类是可以转换成为 lfs 文件的，我们需要<strong>git lfs</strong>。</li>
+  <li><strong>bfg：</strong>一个可以快速优化掉历史文件的工具；后面步骤，Mac Mini 6核6线程的 8500B 会吃满运行一个多小时。</li>
+</ol>
+
+<h2 id="21-列出文件">2.1 列出文件</h2>
+
+<ol>
+  <li>macOS 已经不自带 numfmt，所以我们需要手动安装。</li>
+</ol>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">brew</span> <span class="n">install</span> <span class="n">coreutils</span>
+</code></pre></div></div>
+
+<ol>
+  <li>然后到工程目录下面去列出文件列表</li>
+</ol>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">git</span> <span class="n">rev</span><span class="o">-</span><span class="n">list</span> <span class="o">--</span><span class="n">objects</span> <span class="o">--</span><span class="n">all</span> <span class="p">\</span>
+<span class="o">|</span> <span class="n">git</span> <span class="n">cat</span><span class="o">-</span><span class="n">file</span> <span class="o">--</span><span class="n">batch</span><span class="o">-</span><span class="n">check</span><span class="o">=</span><span class="s1">'%(objecttype) %(objectname) %(objectsize) %(rest)'</span> <span class="p">\</span>
+<span class="o">|</span> <span class="n">sed</span> <span class="o">-</span><span class="n">n</span> <span class="s1">'s/^blob //p'</span> <span class="p">\</span>
+<span class="o">|</span> <span class="n">sort</span> <span class="o">--</span><span class="n">numeric</span><span class="o">-</span><span class="n">sort</span> <span class="o">--</span><span class="n">key</span><span class="o">=</span><span class="mi">2</span> <span class="p">\</span>
+<span class="o">|</span> <span class="n">cut</span> <span class="o">-</span><span class="n">c</span> <span class="mi">1</span><span class="o">-</span><span class="mi">12</span><span class="p">,</span><span class="mi">41</span><span class="o">-</span> <span class="p">\</span>
+<span class="o">|</span> <span class="err">$</span><span class="p">(</span><span class="n">command</span> <span class="o">-</span><span class="n">v</span> <span class="n">gnumfmt</span> <span class="o">||</span> <span class="n">echo</span> <span class="n">numfmt</span><span class="p">)</span> <span class="o">--</span><span class="n">field</span><span class="o">=</span><span class="mi">2</span> <span class="o">--</span><span class="n">to</span><span class="o">=</span><span class="n">iec</span><span class="o">-</span><span class="n">i</span> <span class="o">--</span><span class="n">suffix</span><span class="o">=</span><span class="no">B</span> <span class="o">--</span><span class="n">padding</span><span class="o">=</span><span class="mi">7</span> <span class="o">--</span><span class="n">round</span><span class="o">=</span><span class="n">nearest</span>
+</code></pre></div></div>
+
+<ol>
+  <li>然后我们可以看到文件排序</li>
+</ol>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">7e280</span><span class="n">e9893f2</span>  <span class="mi">754</span><span class="no">KiB</span> <span class="n">iOS</span><span class="o">/</span><span class="n">project</span><span class="p">.</span><span class="nf">xcworkspace</span><span class="o">/</span><span class="n">xcuserdata</span><span class="o">/</span><span class="no">My</span><span class="p">.</span><span class="nf">xcuserdatad</span><span class="o">/</span><span class="no">UserInterfaceState</span><span class="p">.</span><span class="nf">xcuserstate</span>
+<span class="o">.....</span>
+<span class="n">fd61e8cf3d2a</span>  <span class="mf">6.2</span><span class="no">MiB</span> <span class="no">RenderEditor</span><span class="o">/</span><span class="no">VideoAssets</span><span class="o">/</span><span class="n">movie</span><span class="p">.</span><span class="nf">mp4</span>
+<span class="o">.....</span>
+<span class="mi">2</span><span class="n">efc29aa4da9</span>  <span class="mi">21</span><span class="no">MiB</span> <span class="n">iOS</span><span class="o">/</span><span class="no">MyEngine</span><span class="o">/</span><span class="n">libMySDK</span><span class="p">.</span><span class="nf">a</span>
+<span class="n">e0542215a5f1</span>  <span class="mi">27</span><span class="no">MiB</span> <span class="n">iOS</span><span class="o">/</span><span class="no">MySDK</span><span class="o">/</span><span class="n">libMyPluginSDK</span><span class="p">.</span><span class="nf">a</span> 
+<span class="o">.....</span>
+<span class="n">a3f2f126c95c</span>  <span class="mi">447</span><span class="no">MiB</span> <span class="n">iOS</span><span class="o">/</span><span class="no">MyEngine</span><span class="o">/</span><span class="n">libMyEngine</span><span class="p">.</span><span class="nf">a</span>
+<span class="mi">8244</span><span class="n">d414133a</span>  <span class="mi">447</span><span class="no">MiB</span> <span class="n">iOS</span><span class="o">/</span><span class="no">MyEngine</span><span class="o">/</span><span class="n">libMyEngine</span><span class="p">.</span><span class="nf">a</span>
+<span class="n">c40d2c093824</span>  <span class="mi">464</span><span class="no">MiB</span> <span class="no">ShaderLab</span><span class="o">/</span><span class="n">libiPhone</span><span class="o">-</span><span class="n">lib</span><span class="p">.</span><span class="nf">a</span>
+<span class="n">db46c2e6d13f</span>  <span class="mi">539</span><span class="no">MiB</span> <span class="no">ShaderLab</span><span class="o">/</span><span class="n">libiPhone</span><span class="o">-</span><span class="n">lib</span><span class="p">.</span><span class="nf">a</span>
+<span class="mi">94326</span><span class="n">d54ef84</span>  <span class="mi">589</span><span class="no">MiB</span> <span class="n">iOS</span><span class="o">/</span><span class="no">MySDK</span><span class="o">/</span><span class="n">libMyEngine</span><span class="p">.</span><span class="nf">a</span>
+<span class="mi">313532</span><span class="n">f1c875</span>  <span class="mi">655</span><span class="no">MiB</span> <span class="n">iOS</span><span class="o">/</span><span class="no">MySDK</span><span class="o">/</span><span class="n">libMyEngine</span><span class="p">.</span><span class="nf">a</span>
+<span class="mi">92414</span><span class="n">aa09f04</span>  <span class="mi">664</span><span class="no">MiB</span> <span class="n">iOS</span><span class="o">/</span><span class="no">MySDK</span><span class="o">/</span><span class="n">libMyEngine</span><span class="p">.</span><span class="nf">a</span>
+<span class="mo">06</span><span class="n">d76cb5bfd4</span>  <span class="mi">914</span><span class="no">MiB</span> <span class="n">iOS</span><span class="o">/</span><span class="no">MySDK</span><span class="o">/</span><span class="n">libMyEngine</span><span class="p">.</span><span class="nf">a</span>
+</code></pre></div></div>
+
+<p><strong>静态库文件</strong>：其中，libMyPlugin.a  (~20M)、libMyPluginSDK.a （~20M）都出现了50次以上。是其它同学提供的组件库，没有以代码形式引入；这部分应该用git lfs处理；这里预计可以优化掉本地2GB左右的.git文件夹空间。</p>
+
+<p><strong>误提交文件</strong>： libMyEngine.a 是以本工程Target命名的，某同学失误将工程build出的带dSYM的debug库直接提交到了git，所以出现几百MB二进制文件的情况；这部分可以选择删除。</p>
+
+<p><strong>资源文件</strong>：VideoAssets 目录下包含.mp4文件，这部分文件也可以删除。</p>
+
+<h2 id="22-bfg-删除文件">2.2 bfg 删除文件</h2>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 使用 git clone --mirror </span>
+<span class="n">git</span> <span class="nb">clone</span> <span class="o">--</span><span class="n">mirror</span> <span class="n">https</span><span class="ss">:/</span><span class="o">/</span><span class="n">g</span><span class="p">.</span><span class="nf">xx</span><span class="p">.</span><span class="nf">com</span><span class="o">/</span><span class="no">MyEngine</span><span class="o">/</span><span class="no">MyXXEngine</span><span class="p">.</span><span class="nf">git</span>
+
+<span class="c1"># 删除＞一定大小的文件</span>
+<span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bfg</span><span class="p">.</span><span class="nf">jar</span> <span class="o">--</span><span class="n">strip</span><span class="o">-</span><span class="n">blobs</span><span class="o">-</span><span class="n">bigger</span><span class="o">-</span><span class="n">than</span> <span class="mi">261</span><span class="no">M</span>
+
+<span class="c1"># 删除无用文件和文件夹，这部分操作实际上笔者是在 git lfs 之后</span>
+<span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bfg</span><span class="p">.</span><span class="nf">jar</span> <span class="o">--</span><span class="n">delete</span><span class="o">-</span><span class="n">files</span> <span class="no">UserInterfaceState</span><span class="p">.</span><span class="nf">xcuserstate</span> <span class="o">--</span><span class="n">delete</span><span class="o">-</span><span class="n">folders</span> <span class="n">assets</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">blob</span><span class="o">-</span><span class="n">protection</span> 
+
+<span class="c1"># 后续又补删了 ShaderLab 和 RenderEditor</span>
+<span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bfg</span><span class="p">.</span><span class="nf">jar</span> <span class="o">--</span><span class="n">delete</span><span class="o">-</span><span class="n">folders</span>  <span class="no">ShaderLab</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">blob</span><span class="o">-</span><span class="n">protection</span> 
+<span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">bfg</span><span class="p">.</span><span class="nf">jar</span> <span class="o">--</span><span class="n">delete</span><span class="o">-</span><span class="n">folders</span>  <span class="no">RenderEditor</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">blob</span><span class="o">-</span><span class="n">protection</span> 
+
+<span class="c1"># 实际上应该可以使用删除多个文件夹的指令</span>
+<span class="c1"># 笔者当时写成了 java -jar bfg.jar --delete-folders  "RenderEditor,ShaderLab" --no-blob-protection  没有生效，多文件夹写法应该如下，有{}，未尝试。</span>
+
+<span class="c1"># bfg --delete-folders "{folderA,folderB,folderC}" </span>
+
+<span class="c1"># 清理</span>
+<span class="n">git</span> <span class="n">reflog</span> <span class="n">expire</span> <span class="o">--</span><span class="n">expire</span><span class="o">=</span><span class="n">now</span> <span class="o">--</span><span class="n">all</span> <span class="o">&amp;&amp;</span> <span class="n">git</span> <span class="n">gc</span> <span class="o">--</span><span class="n">prune</span><span class="o">=</span><span class="n">now</span> <span class="o">--</span><span class="n">aggressive</span>
+
+<span class="c1"># push</span>
+<span class="n">git</span> <span class="n">push</span>
+</code></pre></div></div>
+
+<p>前后对比</p>
+
+<h2 id="23-静态库转-git-lfs">2.3 静态库转 git lfs</h2>
+
+<p>静态库转lfs，这里建议使用git 官方的 lfs migrate 工具；貌似 bfg 会有问题，<a href="https://couto.xyz/posts/git-lfs-migrate-all-branches/](https://couto.xyz/posts/git-lfs-migrate-all-branches/)">参考链接</a>。</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">git</span> <span class="n">lfs</span> <span class="n">migrate</span> <span class="n">import</span> <span class="o">--</span><span class="kp">include</span><span class="o">=</span><span class="s2">"libMyPlugin.a,libMyPluginSDK.a"</span> <span class="o">--</span><span class="n">everything</span>
+</code></pre></div></div>
+
+<h1 id="3-结果">3. 结果</h1>
+
+<h2 id="前后对比">前后对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">步骤</th>
+      <th style="text-align: left">体积</th>
+      <th style="text-align: left">.git</th>
+      <th style="text-align: left">说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">原始</td>
+      <td style="text-align: left">14.4 G</td>
+      <td style="text-align: left">12.8 G</td>
+      <td style="text-align: left">原始大小，git clone 会很慢</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">误提交文件</td>
+      <td style="text-align: left">8.3 G</td>
+      <td style="text-align: left">5.16 G</td>
+      <td style="text-align: left">删除掉 ＞261M 的误提交文件</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">二进制转lfs文件</td>
+      <td style="text-align: left">6.6 G</td>
+      <td style="text-align: left">3.8 G</td>
+      <td style="text-align: left">将二进制库转成lfs文件</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">gitignore文件</td>
+      <td style="text-align: left">4.2 G</td>
+      <td style="text-align: left">3.5 G</td>
+      <td style="text-align: left">删除应该gitignore的文件：xcuserstate等</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">删除资源</td>
+      <td style="text-align: left">2.2 G</td>
+      <td style="text-align: left">1.7 G</td>
+      <td style="text-align: left">确认已经可以删除的资源：RenderEditor等</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>分析：</p>
+
+<p><strong>误提交文件</strong>：占了大头，真的太大太大了。</p>
+
+<p><strong>二进制文件</strong>：约有1.5GB+左右文件可以存到公司git服务器上。</p>
+
+<p><strong>gitignore文件</strong>：优化了约2GB，日积月累的工程本地配置文件。</p>
+
+<p><strong>资源文件</strong>：约2GB，不应该上传到git的文件。</p>
+
+<h1 id="4-后记">4. 后记</h1>
+
+<p>体积的增加，和开发人员意识和知识掌握程度有着不少联系。规避体积过快膨胀，更重要的是前期做好工作。前期的预防，比后续的优化要简单安全得多。</p>
+
+<ul>
+  <li><strong>.gitignore</strong></li>
+</ul>
+
+<p>现在git上添加gitignore文件已经非常方便，不用写一行代码只要一路鼠标点点点就可以生成ignore文件。比如上文提到到资源文件夹，可以使用</p>
+
+<p><img src="https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/gitignore.png" alt="2020%20Aug%204-git%E5%B7%A5%E7%A8%8B%E4%BD%93%E7%A7%AF%E4%BC%98%E5%8C%96%209026a3af86464cd29355f50d647dae73/gitignore.png" /></p>
+
+<ul>
+  <li><strong>git lfs</strong></li>
+</ul>
+
+<p>早一点引入 git lfs，可以让无法git diff的文件存储的云端，不必每次checkout 或者clone将所有二进制文件下载到本地，可以减少本地其它成员的.git目录体积膨胀。</p>
+
+<ul>
+  <li><strong>Code review</strong></li>
+</ul>
+
+<p>使用merge request提交代码，每次代码经过review，可以及时发现不应该提交的文件。</p>
+
+<h1 id="5-参考">5. 参考</h1>
+
+<p><a href="https://stackoverflow.com/questions/10622179/how-to-find-identify-large-commits-in-git-history">https://stackoverflow.com/questions/10622179/how-to-find-identify-large-commits-in-git-history</a></p>
+
+<p><a href="https://rtyley.github.io/bfg-repo-cleaner/">https://rtyley.github.io/bfg-repo-cleaner/</a></p>
+
+<p><a href="https://couto.xyz/posts/git-lfs-migrate-all-branches/">https://couto.xyz/posts/git-lfs-migrate-all-branches/</a></p>
+
+<p><a href="https://github.com/git-lfs/git-lfs/issues/326">https://github.com/git-lfs/git-lfs/issues/326</a></p>
+
+<p><a href="https://docs.gitlab.com/ee/topics/git/lfs/migrate_to_git_lfs.html">https://docs.gitlab.com/ee/topics/git/lfs/migrate_to_git_lfs.html</a></p>
+:ET
