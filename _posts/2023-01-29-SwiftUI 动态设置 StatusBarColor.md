@@ -87,4 +87,4 @@
 
 **效果**
 
-![demo.gif](SwiftUI%20%E5%8A%A8%E6%80%81%E8%AE%BE%E7%BD%AE%20StatusBarColor/c03fafb9-6d15-4521-8630-5c6f78e04119.gif)
+![demo.gif]([img](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/img/c03fafb9-6d15-4521-8630-5c6f78e04119.gif)
