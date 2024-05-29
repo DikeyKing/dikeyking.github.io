@@ -1,6 +1,6 @@
 # Apple Vision Pro
 
-![img_v2_f6407185-21f6-4f9c-9811-24e834b0aa9g.jpg](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/img_v2_f6407185-21f6-4f9c-9811-24e834b0aa9g.jpg)
+![img_v2_f6407185-21f6-4f9c-9811-24e834b0aa9g.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/img_v2_f6407185-21f6-4f9c-9811-24e834b0aa9g.jpg)
 
 # 基础信息
 
@@ -9,7 +9,7 @@
 - 实时三维建图
 - 芯片：M2（功耗最高20w）+R1（功耗未知）
     
-    ![1280X1280.JPEG](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/1280X1280.jpeg)
+    ![1280X1280.JPEG](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/1280X1280.jpeg)
     
 - 传感器：12摄像头 + 5传感器 + 6麦克风
 - 响应时间：12毫秒
@@ -25,25 +25,25 @@
         - 续航三小时。 35.9 Wh / 3 h = 11.97 W
 - 主摄像头：***每秒传输十亿+像素***
     
-    ![1280X1280 (3).PNG](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/1280X1280_(3).png)
+    ![1280X1280 (3).PNG](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/1280X1280_(3).png)
     
 - 辅助摄像头
     
-    ![1280X1280 (1).JPEG](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/1280X1280_(1).jpeg)
+    ![1280X1280 (1).JPEG](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/1280X1280_(1).jpeg)
     
     - ***Downward cameras（向下摄像头）：提供地面环境信息***
     - ***IR illuminators（红外照明器）：增强低光环境图像质量***
     - ***Side cameras（侧面摄像头）：提供周边环境信息***
 - 深度头：  ***实时三维建图***
     
-    ![1280X1280 (2).JPEG](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/1280X1280_(2).jpeg)
+    ![1280X1280 (2).JPEG](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/1280X1280_(2).jpeg)
     
 
 ## 软件
 
 - 系统：VisionOS**（兼容iOS和iPadOS的应用）**
     
-    ![Untitled.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Untitled.png)
+    ![Untitled.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Untitled.png)
     
 - 开发工具
     - Xcode
@@ -53,11 +53,11 @@
     - Unity
 - AppStore for `visionOS`
     
-    ![Appstore.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Appstore.png)
+    ![Appstore.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Appstore.png)
     
     ***AppStore for visionOS***
     
-    ![已有app兼容.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E5%25B7%25B2%25E6%259C%2589app%25E5%2585%25BC%25E5%25AE%25B9.png)
+    ![已有app兼容.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E5%25B7%25B2%25E6%259C%2589app%25E5%2585%25BC%25E5%25AE%25B9.png)
     
     ***可将已有的iOS app展现在xrOS商店***
     
@@ -66,7 +66,7 @@
 
 ## 架构
 
-![架构.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E6%259E%25B6%25E6%259E%2584.png)
+![架构.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E6%259E%25B6%25E6%259E%2584.png)
 
 ***visionOS架构***
 
@@ -84,7 +84,7 @@
 
 ## 空间概念
 
-![空间概念.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E7%25A9%25BA%25E9%2597%25B4%25E6%25A6%2582%25E5%25BF%25B5.png)
+![空间概念.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E7%25A9%25BA%25E9%2597%25B4%25E6%25A6%2582%25E5%25BF%25B5.png)
 
 ### Window
 
@@ -118,7 +118,7 @@
 - 场景重建（Scene reconstruction）：ARKit可以通过多个相机视角对现实场景进行捕捉和分析，从而创建出三维模型，以供虚拟对象精确地与现实场景进行交互
 - 场景理解（Scene understanding）：平面和物体检测以及标记
     
-    [Scene understand.mp4](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Scene_understand.mp4)
+    [Scene understand.mp4](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Scene_understand.mp4)
     
 
 ***Plane estimation + 场景理解***
@@ -127,11 +127,11 @@
 - 世界跟踪（World tracking）：ARKit可以跟踪设备在现实世界中的位置和方向，以便在设备移动时，虚拟对象能够随之移动并保持稳定
 - [NEW] 手跟踪（Hand tracking）：可以检测手势变化并做出响
     
-    ![b1c31573-ce55-468c-83cd-821bcab0186e.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/b1c31573-ce55-468c-83cd-821bcab0186e.png)
+    ![b1c31573-ce55-468c-83cd-821bcab0186e.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/b1c31573-ce55-468c-83cd-821bcab0186e.png)
     
     ***Hand tracking 实现虚拟的手***
     
-    ![交互.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E4%25BA%25A4%25E4%25BA%2592.png)
+    ![交互.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E4%25BA%25A4%25E4%25BA%2592.png)
     
     ***来源（建议所有设计师观看Design for visionOS章节）：wwdc2023-10073_Design for spatial input***
     
@@ -146,23 +146,23 @@
 - Runloop：类似 `do while` 的循环，用于对渲染生命周期的理解
 - Update流程：处理渲染数据、自定义行为的关键时机
     
-    ![CompositorLayer.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/CompositorLayer.png)
+    ![CompositorLayer.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/CompositorLayer.png)
     
     ***CompositorLayer 渲染***
     
-    ![帧渲染流程.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E5%25B8%25A7%25E6%25B8%25B2%25E6%259F%2593%25E6%25B5%2581%25E7%25A8%258B.png)
+    ![帧渲染流程.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E5%25B8%25A7%25E6%25B8%25B2%25E6%259F%2593%25E6%25B5%2581%25E7%25A8%258B.png)
     
     ***帧渲染流程***
     
-    ![CompositorLayer.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/帧渲染流程.png)
+    ![CompositorLayer.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/帧渲染流程.png)
     
     ***Update流程***
     
-    ![整体渲染流程.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E6%2595%25B4%25E4%25BD%2593%25E6%25B8%25B2%25E6%259F%2593%25E6%25B5%2581%25E7%25A8%258B.png)
+    ![整体渲染流程.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E6%2595%25B4%25E4%25BD%2593%25E6%25B8%25B2%25E6%259F%2593%25E6%25B5%2581%25E7%25A8%258B.png)
     
     ***整体渲染流程***
     
-    ![Runloop.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Runloop.png)
+    ![Runloop.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Runloop.png)
     
     ***Runloop：while 循环***
     
@@ -219,7 +219,7 @@
 - visionOS SDK
 - visionOS Simulator
     
-    ![工具链-模拟器.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E5%25B7%25A5%25E5%2585%25B7%25E9%2593%25BE-%25E6%25A8%25A1%25E6%258B%259F%25E5%2599%25A8.png)
+    ![工具链-模拟器.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E5%25B7%25A5%25E5%2585%25B7%25E9%2593%25BE-%25E6%25A8%25A1%25E6%258B%259F%25E5%2599%25A8.png)
     
     Todo：Reality Composer Pro
     
@@ -228,7 +228,7 @@
 
 ## Reality Composer Pro
 
-![Reality Composer Pro.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Reality_Composer_Pro.png)
+![Reality Composer Pro.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/Reality_Composer_Pro.png)
 
 This content is only supported in a Feishu Docs
 
@@ -237,7 +237,7 @@ This content is only supported in a Feishu Docs
 - 用于预览和准备3D内容
 - 强大的编辑工具：支持3D模型、材质和声音
     
-    ![编辑工具.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E7%25BC%2596%25E8%25BE%2591%25E5%25B7%25A5%25E5%2585%25B7.png)
+    ![编辑工具.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E7%25BC%2596%25E8%25BE%2591%25E5%25B7%25A5%25E5%2585%25B7.png)
     
     ***仅仅通过拖拽，完成模型或场景***
     
@@ -245,7 +245,7 @@ This content is only supported in a Feishu Docs
 - 可使用`Object Capture`将真实世界的物体转变成`USDZ`并放入`Reality Composer Pro`
 - USDZ 文件，可以直接在xrOS打开，多个工业级软件支持：`Maya`、`Blender`、
     
-    ![usdz.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/usdz.png)
+    ![usdz.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/usdz.png)
     
     ***USDZ文件预览***
     
@@ -259,7 +259,7 @@ This content is only supported in a Feishu Docs
     - head pose：头部的倾斜和旋转等操作
     - hands：手部的动作和手势
         
-        ![手势.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E6%2589%258B%25E5%258A%25BF.png)
+        ![手势.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/%25E6%2589%258B%25E5%258A%25BF.png)
         
         ***多种技术结合的demo展示：Plane estimation、Hand tracking、tapping***
         
@@ -279,18 +279,18 @@ This content is only supported in a Feishu Docs
 
 - Safari
     
-    ![safari.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/safari.png)
+    ![safari.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/safari.png)
     
 
 ***新的<Model>可以包含3D模型USDZ（Beta）***
 
-![usdz.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/usdz%201.png)
+![usdz.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/usdz%201.png)
 
 ***Combine* QuickLock *with Safari***
 
 - 和`WebGL`保持兼容
     
-    ![web3d.png](Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/web3d.png)
+    ![web3d.png](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/web3d.png)
     
 
 ***和主流Web 3D引擎保持良好兼容性***
