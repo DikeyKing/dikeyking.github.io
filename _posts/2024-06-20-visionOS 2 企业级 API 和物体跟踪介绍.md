@@ -3,9 +3,6 @@ layout: post
 title:  "visionOS 2 企业级 API 和物体跟踪介绍"  
 ---
 
-
-# visionOS 2
-
 # 前言
 
 visionOS 2.0 比起 visionOS 1.0，完善了更多的基础控件。同时，针对图像的隐私问题，苹果提供了企业级 API，这些 API 可以利用 Apple Vision Pro 的传感器获取更多源数据，做到之前做不到的很多事情；主要分为两类
