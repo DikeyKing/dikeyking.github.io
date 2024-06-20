@@ -71,7 +71,7 @@ visionOS 2.0 比起 visionOS 1.0，完善了更多的基础控件。同时，针
 - `com.apple.developer.screen-capture.include-passthrough`
 - 利用企业级API ，可以使用屏幕录制同时录制虚拟和现实了；之前无法获取真实世界画面；以下是demo中，讲录制的画面实时共享
 
-![img_99860d8aad315a94f2a2425cbfa75204.jpg](visionOS%202%204cb646adef954d5699b160ba52425583/img_99860d8aad315a94f2a2425cbfa75204.jpg)
+![img_99860d8aad315a94f2a2425cbfa75204.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/img_99860d8aad315a94f2a2425cbfa75204.jpg)
 
 # 平台控制
 
@@ -97,11 +97,13 @@ visionOS 2.0 比起 visionOS 1.0，完善了更多的基础控件。同时，针
     
 - 原先：不能直接访问 Apple Neural Engine
 
-![img_d9c8cb8ca02de69decd83e049f5eecb9.jpg](visionOS%202%204cb646adef954d5699b160ba52425583/img_d9c8cb8ca02de69decd83e049f5eecb9.jpg)
+![img_d9c8cb8ca02de69decd83e049f5eecb9.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/img_d9c8cb8ca02de69decd83e049f5eecb9.jpg)
 
 - 现在：可以利用 Apple Neural Engine 完成加速
     
-    ![img_9948c113972de8c8ad4ff360e3695595.jpg](visionOS%202%204cb646adef954d5699b160ba52425583/img_9948c113972de8c8ad4ff360e3695595.jpg)
+    https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/
+    
+    ![img_9948c113972de8c8ad4ff360e3695595.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/img_9948c113972de8c8ad4ff360e3695595.jpg)
     
 
 ### 物体跟踪参数设置
@@ -146,7 +148,7 @@ visionOS 2.0 比起 visionOS 1.0，完善了更多的基础控件。同时，针
 - 显然，缺点是会增加发热、加快电池消耗
 - 比如：我们需要展示一辆赛车内部工作原理的时候，因为对算力要求高，这时候，我们就可以 Turbo 模式走起
     
-    ![img_a3888a7594c2204ec8c6b5ffb1589343.jpg](visionOS%202%204cb646adef954d5699b160ba52425583/img_a3888a7594c2204ec8c6b5ffb1589343.jpg)
+    ![img_a3888a7594c2204ec8c6b5ffb1589343.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/img_a3888a7594c2204ec8c6b5ffb1589343.jpg)
     
 
 # **3D 物体跟踪**
@@ -157,19 +159,19 @@ visionOS 2.0 比起 visionOS 1.0，完善了更多的基础控件。同时，针
 
 - 首先：如图所示，ARKit 现在可以获取物体的`位置`、`朝向` 等信息，这些数据用坐标系和边界来表示
     
-    ![Untitled](visionOS%202%204cb646adef954d5699b160ba52425583/Untitled.png)
+    ![Untitled](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/Untitled.png)
     
 - 其次：ARKit 这次还给3D物体提供了标签功能
     
-    ![img_a205e93e0d49b250117e49a8b0b71329.jpg](visionOS%202%204cb646adef954d5699b160ba52425583/img_a205e93e0d49b250117e49a8b0b71329.jpg)
+    ![img_a205e93e0d49b250117e49a8b0b71329.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/img_a205e93e0d49b250117e49a8b0b71329.jpg)
     
 - 物体跟踪 + AR 效果，当然还有物体遮挡之类，ARKit 也帮我们做掉了。
     
-    ![img_b3a6d28b3d87008aa6620f55a7611722.jpg](visionOS%202%204cb646adef954d5699b160ba52425583/img_b3a6d28b3d87008aa6620f55a7611722.jpg)
+    ![img_b3a6d28b3d87008aa6620f55a7611722.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/img_b3a6d28b3d87008aa6620f55a7611722.jpg)
     
 - 要完成整个流程，过程分三步
     
-    ![Untitled](visionOS%202%204cb646adef954d5699b160ba52425583/Untitled%201.png)
+    ![Untitled](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/Untitled%201.png)
     
 
 ## 实现步骤一：制作 3D 模型
@@ -187,15 +189,15 @@ visionOS 2.0 比起 visionOS 1.0，完善了更多的基础控件。同时，针
 
 - 新增Spatial栏目中找到：`Object Tracking`
     
-    ![Untitled](visionOS%202%204cb646adef954d5699b160ba52425583/Untitled%202.png)
+    ![Untitled](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/Untitled%202.png)
     
 - CoreML 过程
     
-    ![img_6fbd7621567c36b3559e73469b3002b5.jpg](visionOS%202%204cb646adef954d5699b160ba52425583/img_6fbd7621567c36b3559e73469b3002b5.jpg)
+    ![img_6fbd7621567c36b3559e73469b3002b5.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/img_6fbd7621567c36b3559e73469b3002b5.jpg)
     
 - 训练配置
     
-    ![img_adc0d7fee64bb130f00923f292268a22.jpg](visionOS%202%204cb646adef954d5699b160ba52425583/img_adc0d7fee64bb130f00923f292268a22.jpg)
+    ![img_adc0d7fee64bb130f00923f292268a22.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/img_adc0d7fee64bb130f00923f292268a22.jpg)
     
     - 配置中，我们可以看到 `All Angels`、`Upright`、`Front` 三个选项，设置这些参数，可以让 `CoreML` 更好地训练物体；显然，地球仪 `All Angels` 最合适，但是前文图中的显微镜，我们不太会翻转过来看，所以选 `Upright` 是合适的，然后图中的示波器，我们只看正面，那么  `Front` 是最合适和训练选项
     - 多个物体：我们可以同时添加多个物体同时训练，比如，地球周围挂一个卫星
@@ -208,16 +210,16 @@ visionOS 2.0 比起 visionOS 1.0，完善了更多的基础控件。同时，针
 
 - `Reality Composer Pro`或`RealityKit` 和 `ARKit` ：前者类似 Unity 中的可视化编辑器，后者则使用代码实现
     
-    ![img_122892402350622b7fa9bd0c6faf9bba.jpg](visionOS%202%204cb646adef954d5699b160ba52425583/img_122892402350622b7fa9bd0c6faf9bba.jpg)
+    ![img_122892402350622b7fa9bd0c6faf9bba.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/img_122892402350622b7fa9bd0c6faf9bba.jpg)
     
 - 使用 `Reality Composer Pro`
     - 可放置 USDZ 模型用于定位
         
-        ![Untitled](visionOS%202%204cb646adef954d5699b160ba52425583/Untitled%203.png)
+        ![Untitled](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/Untitled%203.png)
         
     - 可以放置轨道，ARKit 和 RealityKit 会自动帮我们计算好遮挡之类的关系
         
-        ![Untitled](visionOS%202%204cb646adef954d5699b160ba52425583/Untitled%204.png)
+        ![Untitled](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/Untitled%204.png)
         
 - 实现辅助页面
     - 显示 `USDZ`
