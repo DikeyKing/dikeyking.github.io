@@ -1,4 +1,7 @@
-# Apple Vision Pro
+---
+layout: post
+title:  "Apple Vision Pro"  
+---
 
 ![img_v2_f6407185-21f6-4f9c-9811-24e834b0aa9g.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/Apple%20Vision%20Pro%2036f831d7d5b942d68bc14bdb27e9811d/img_v2_f6407185-21f6-4f9c-9811-24e834b0aa9g.jpg)
 
