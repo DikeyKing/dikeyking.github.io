@@ -20,9 +20,14 @@ visionOS 2.0 比起 visionOS 1.0，完善了更多的基础控件。同时，针
 **流程**
 
 1. **账号要求**：苹果官方文档提示 **Apple Developer Program** 或 **Apple Developer Enterprise Program** 都可以参与申请（之前媒体报道需要企业计划，后笔者找苹果确认，**Apple Developer Program** 也可以）
-2. 提交 **Development Only** 申请：[https://developer.apple.com/go/?id=69613ca716fe11ef8ec848df370857f4](https://developer.apple.com/go/?id=69613ca716fe11ef8ec848df370857f4)（目前打不开，提示未授权，不确定是否已准备好）
-3. 使用企业级 API 完成开发
-4. 分发到 **Apple Business Manager** 或 **Apple School Manager**
+2. 提交 **Development Only** 申请：[https://developer.apple.com/go/?id=69613ca716fe11ef8ec848df370857f4](https://developer.apple.com/go/?id=69613ca716fe11ef8ec848df370857f4)
+    - **注意**：需要 **Apple Developer Program** 的 **Account Holder** 或 **Apple Developer Enterprise Program** 来申请，不然会提示错误
+4. 使用企业级 API 完成开发
+5. 分发到 **Apple Business Manager** 或 **Apple School Manager**
+
+可供申请的 **entitlements** 如下所示：
+
+![9974e12f5de6f0d85bc9ea985066ef97.jpg](https://raw.githubusercontent.com/DikeyKing/dikeyking.github.io/master/_posts/visionOS%202%204cb646adef954d5699b160ba52425583/9974e12f5de6f0d85bc9ea985066ef97.jpg)
 
 # 获取更多传感器数据
 
